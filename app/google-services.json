@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "494626708296",
-    "project_id": "studytrackver1",
-    "storage_bucket": "studytrackver1.firebasestorage.app"
+    "project_number": "1015181151579",
+    "project_id": "studytrackver1-8a96e",
+    "storage_bucket": "studytrackver1-8a96e.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:494626708296:android:58018aa91669065d23b17d",
+        "mobilesdk_app_id": "1:1015181151579:android:dd29c23dac326600601e7e",
         "android_client_info": {
           "package_name": "com.example.studytrack_ver1"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1015181151579-s7kelr98t16domjdm8vrl4vpd8b7f7ks.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.studytrack_ver1",
+            "certificate_hash": "32153da5fd28d385bc3c04cccb690302f9868e78"
+          }
+        },
+        {
+          "client_id": "1015181151579-45vj6e3mnp08bl47m5khpl3iejajtn3u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBkfKCtBwoycmo5nTj56q4e7oYDegTaCvw"
+          "current_key": "AIzaSyA69Db3RPXT4Xr44S3KSoWYYQ0-YVVQg2o"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1015181151579-45vj6e3mnp08bl47m5khpl3iejajtn3u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
