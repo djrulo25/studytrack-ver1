@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_materias">
+
+    <fragment
+        android:id="@+id/nav_materias"
+        android:name="com.example.studytrack_ver1.MateriasFragment"
+        android:label="Materias"
+        tools:layout="@layout/fragment_materias" />
+
+    <fragment
+        android:id="@+id/nav_tareas"
+        android:name="com.example.studytrack_ver1.TareasFragment"
+        android:label="Materias"
+        tools:layout="@layout/fragment_tareas" />
+
+    <fragment
+        android:id="@+id/nav_examenes"
+        android:name="com.example.studytrack_ver1.ExamenesFragment"
+        android:label="Examenes"
+        tools:layout="@layout/fragment_examenes" />
+
+    <fragment
+        android:id="@+id/nav_perfil"
+        android:name="com.example.studytrack_ver1.PerfilFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_perfil" />
+</navigation>

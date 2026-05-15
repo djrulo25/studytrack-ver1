@@ -151,7 +151,10 @@ public class MainActivity extends AppCompatActivity {
     private void actualizarUI(FirebaseUser user) {
         if (user != null) {
             Toast.makeText(this, "Sesión iniciada: " + user.getEmail(), Toast.LENGTH_LONG).show();
-            // Aquí puedes navegar a otra actividad
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+
         }
     }
 }
