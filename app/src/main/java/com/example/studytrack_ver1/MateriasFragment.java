@@ -25,7 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MateriasFragment extends Fragment {
+public class MateriasFragment extends Fragment implements MateriaAdapter.OnMateriaLongClickListener {
 
     private RecyclerView rvMaterias;
     private MateriaAdapter adapter;
@@ -54,7 +54,7 @@ public class MateriasFragment extends Fragment {
         FloatingActionButton fabAdd = view.findViewById(R.id.fabAddMateria);
 
         materiasList = new ArrayList<>();
-        adapter = new MateriaAdapter(materiasList);
+        adapter = new MateriaAdapter(materiasList, this);
 
         rvMaterias.setLayoutManager(new LinearLayoutManager(getContext()));
         rvMaterias.setAdapter(adapter);
@@ -73,17 +73,21 @@ public class MateriasFragment extends Fragment {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                         if (error != null) {
-                            Toast.makeText(getContext(), "Error al cargar materias", Toast.LENGTH_SHORT).show();
+                            if (getContext() != null) {
+                                Toast.makeText(getContext(), "Error al cargar materias", Toast.LENGTH_SHORT).show();
+                            }
                             return;
                         }
 
-                        materiasList.clear();
-                        for (QueryDocumentSnapshot doc : value) {
-                            Materia materia = doc.toObject(Materia.class);
-                            materia.setId(doc.getId());
-                            materiasList.add(materia);
+                        if (value != null) {
+                            materiasList.clear();
+                            for (QueryDocumentSnapshot doc : value) {
+                                Materia materia = doc.toObject(Materia.class);
+                                materia.setId(doc.getId());
+                                materiasList.add(materia);
+                            }
+                            adapter.notifyDataSetChanged();
                         }
-                        adapter.notifyDataSetChanged();
                     }
                 });
     }
@@ -98,21 +102,26 @@ public class MateriasFragment extends Fragment {
         TextInputEditText etEstado = view.findViewById(R.id.etEstado);
 
         builder.setView(view)
-                .setPositiveButton("Guardar", (dialog, id) -> {
-                    String nombre = etNombre.getText().toString();
-                    String semestre = etSemestre.getText().toString();
-                    String profesor = etProfesor.getText().toString();
-                    String estado = etEstado.getText().toString();
-
-                    if (!nombre.isEmpty()) {
-                        saveMateria(nombre, semestre, profesor, estado);
-                    } else {
-                        Toast.makeText(getContext(), "El nombre es obligatorio", Toast.LENGTH_SHORT).show();
-                    }
-                })
+                .setPositiveButton("Guardar", null) // Set to null to override later
                 .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
         
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String nombre = etNombre.getText().toString().trim();
+            String semestre = etSemestre.getText().toString().trim();
+            String profesor = etProfesor.getText().toString().trim();
+            String estado = etEstado.getText().toString().trim();
+
+            if (nombre.isEmpty()) {
+                etNombre.setError("El nombre es obligatorio");
+                return;
+            }
+            
+            saveMateria(nombre, semestre, profesor, estado);
+            dialog.dismiss();
+        });
     }
 
     private void saveMateria(String nombre, String semestre, String profesor, String estado) {
@@ -122,10 +131,30 @@ public class MateriasFragment extends Fragment {
         db.collection("usuarios").document(userId).collection("materias")
                 .add(nuevaMateria)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(getContext(), "Materia agregada", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Materia agregada", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error al guardar", Toast.LENGTH_SHORT).show();
+                    if (getContext() != null) {
+                        Toast.makeText(getContext(), "Error al guardar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 });
+    }
+
+    @Override
+    public void onMateriaLongClick(Materia materia) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Eliminar Materia")
+                .setMessage("¿Estás seguro de que deseas eliminar " + materia.getNombre() + "?")
+                .setPositiveButton("Eliminar", (dialog, which) -> {
+                    String userId = mAuth.getCurrentUser().getUid();
+                    db.collection("usuarios").document(userId).collection("materias").document(materia.getId())
+                            .delete()
+                            .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Materia eliminada", Toast.LENGTH_SHORT).show())
+                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al eliminar", Toast.LENGTH_SHORT).show());
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 }
